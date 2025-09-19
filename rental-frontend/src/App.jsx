@@ -14,7 +14,13 @@ export default function App() {
   const [isLoading, setIsLoading] = useState(false);
   const [isAuthReady, setIsAuthReady] = useState(false);
 
-  const API_URL = 'https://car-rental-ashy-xi.vercel.app/api/v1';
+  const API_URL = (
+  // Vite
+  (typeof import.meta !== 'undefined' && import.meta.env && import.meta.env.VITE_API_URL)
+    ? import.meta.env.VITE_API_URL
+    // CRA fallback
+    : (process.env.REACT_APP_API_URL || 'https://car-rental-ashy-xi.vercel.app/api/v1')
+);
 
   // Central API helper function
   const api = async (endpoint, options = {}) => {
