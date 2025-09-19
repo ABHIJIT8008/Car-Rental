@@ -14,7 +14,7 @@ export default function App() {
   const [isLoading, setIsLoading] = useState(false);
   const [isAuthReady, setIsAuthReady] = useState(false);
 
-  const API_URL = 'http://localhost:5000/api/v1';
+  const API_URL = 'https://car-rental-dw7ggnzsc-abhijitgupta196-gmailcoms-projects.vercel.app/api/v1';
 
   // Central API helper function
   const api = async (endpoint, options = {}) => {
