@@ -23,10 +23,7 @@ const app = express();
 
 // Enable CORS
 app.use(cors({
-  origin: "https://car-rental-f-phi.vercel.app/auth",
-  methods: ["GET", "POST", "PUT", "DELETE"],
-  credentials: true
-}));
+    origin: ["https://car-rental-f-phi.vercel.app/auth"]}));
 
 // Body parser
 app.use(express.json());
