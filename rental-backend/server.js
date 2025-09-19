@@ -22,7 +22,11 @@ const driverRoutes = require('./routes/driver');
 const app = express();
 
 // Enable CORS
-app.use(cors());
+app.use(cors({
+  origin: "https://car-rental-f-phi.vercel.app",
+  methods: ["GET", "POST", "PUT", "DELETE"],
+  credentials: true
+}));
 
 // Body parser
 app.use(express.json());
