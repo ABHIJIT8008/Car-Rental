@@ -14,8 +14,7 @@ export default function App() {
   const [isLoading, setIsLoading] = useState(false);
   const [isAuthReady, setIsAuthReady] = useState(false);
 
-  // ✅ Auto-pick API_URL from .env (works for dev/prod)
-  const API_URL = import.meta.env.VITE_API_URL;
+  const API_URL = 'http://localhost:5000/api/v1';
 
   // Central API helper function
   const api = async (endpoint, options = {}) => {
@@ -24,10 +23,8 @@ export default function App() {
     if (token) {
       headers['Authorization'] = `Bearer ${token}`;
     }
-
     const response = await fetch(`${API_URL}${endpoint}`, { ...options, headers });
     const data = await response.json();
-
     if (!response.ok) {
       throw new Error(data.message || 'An API error occurred');
     }
@@ -87,14 +84,13 @@ export default function App() {
     <BrowserRouter>
       <Routes>
         {!user ? (
+          // Unauthenticated: go to AuthPage
           <>
-            <Route
-              path="/auth"
-              element={<AuthPage handleAuth={handleAuth} apiError={error} isLoading={isLoading} />}
-            />
+            <Route path="/auth" element={<AuthPage handleAuth={handleAuth} apiError={error} isLoading={isLoading} />} />
             <Route path="*" element={<Navigate to="/auth" replace />} />
           </>
         ) : (
+          // Authenticated: use dashboard routes
           <>
             <Route
               path="/dashboard/*"
