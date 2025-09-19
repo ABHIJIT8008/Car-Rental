@@ -1,32 +1,30 @@
 // server.js
-const express = require('express');
-const dotenv = require('dotenv');
-const connectDB = require('./config/db');
-const cors = require('cors');
-const errorHandler = require('./middleware/error'); // Custom error handler
+const express = require("express");
+const dotenv = require("dotenv");
+const connectDB = require("./config/db");
+const cors = require("cors");
+const errorHandler = require("./middleware/error"); // Custom error handler
 
 // Load env vars
-dotenv.config({ path: './.env' });
+dotenv.config({ path: "./.env" });
 
 // Connect to database
 connectDB();
 
 // Route files
-const authRoutes = require('./routes/auth');
-const rideRoutes = require('./routes/rides');
-const feedbackRoutes = require('./routes/feedback');
-const paymentRoutes = require('./routes/payments');
-const adminRoutes = require('./routes/admin');
-const mapRoutes = require('./routes/map');
-const driverRoutes = require('./routes/driver');
+const authRoutes = require("./routes/auth");
+const rideRoutes = require("./routes/rides");
+const feedbackRoutes = require("./routes/feedback");
+const paymentRoutes = require("./routes/payments");
+const adminRoutes = require("./routes/admin");
+const mapRoutes = require("./routes/map");
+const driverRoutes = require("./routes/driver");
 
 const app = express();
 
-// ✅ Enable CORS (both local + production frontend)
 const allowedOrigins = [
-  "http://localhost:5173", // Vite frontend (local dev)
-  "http://localhost:3000", // CRA frontend (local dev)
-  "https://car-rental-f-phi.vercel.app", // Production frontend
+  "http://localhost:5173",
+  "https://car-rental-44uw.vercel.app",
 ];
 
 app.use(
@@ -35,11 +33,12 @@ app.use(
       if (!origin || allowedOrigins.includes(origin)) {
         callback(null, true);
       } else {
-        callback(new Error("Not allowed by CORS"));
+        callback(new Error("CORS not allowed"));
       }
     },
-    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
     credentials: true,
+    methods: "GET,POST,PUT,DELETE,OPTIONS",
+    allowedHeaders: ["Content-Type", "Authorization"],
   })
 );
 
@@ -52,13 +51,13 @@ app.get("/", (req, res) => {
 });
 
 // Mount routers
-app.use('/api/v1/auth', authRoutes);
-app.use('/api/v1/rides', rideRoutes);
-app.use('/api/v1/feedback', feedbackRoutes);
-app.use('/api/v1/payments', paymentRoutes);
-app.use('/api/v1/admin', adminRoutes);
-app.use('/api/v1/map', mapRoutes);
-app.use('/api/v1/driver', driverRoutes);
+app.use("/api/v1/auth", authRoutes);
+app.use("/api/v1/rides", rideRoutes);
+app.use("/api/v1/feedback", feedbackRoutes);
+app.use("/api/v1/payments", paymentRoutes);
+app.use("/api/v1/admin", adminRoutes);
+app.use("/api/v1/map", mapRoutes);
+app.use("/api/v1/driver", driverRoutes);
 
 // Error handler (must be after routes)
 app.use(errorHandler);
@@ -67,7 +66,9 @@ const PORT = process.env.PORT || 5000;
 
 const server = app.listen(PORT, () => {
   console.log(
-    `🚀 Server running in ${process.env.NODE_ENV || 'development'} mode on port ${PORT}`
+    `🚀 Server running in ${
+      process.env.NODE_ENV || "development"
+    } mode on port ${PORT}`
   );
 });
 
