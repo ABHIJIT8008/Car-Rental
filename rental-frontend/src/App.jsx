@@ -14,7 +14,8 @@ export default function App() {
   const [isLoading, setIsLoading] = useState(false);
   const [isAuthReady, setIsAuthReady] = useState(false);
 
-  const API_URL = 'http://localhost:5000/api/v1';
+  // ✅ Use environment variable with fallback to localhost
+  const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000/api/v1";
 
   // Central API helper function
   const api = async (endpoint, options = {}) => {
@@ -86,7 +87,10 @@ export default function App() {
         {!user ? (
           // Unauthenticated: go to AuthPage
           <>
-            <Route path="/auth" element={<AuthPage handleAuth={handleAuth} apiError={error} isLoading={isLoading} />} />
+            <Route
+              path="/auth"
+              element={<AuthPage handleAuth={handleAuth} apiError={error} isLoading={isLoading} />}
+            />
             <Route path="*" element={<Navigate to="/auth" replace />} />
           </>
         ) : (
