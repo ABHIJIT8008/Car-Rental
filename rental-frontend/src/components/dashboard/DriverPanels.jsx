@@ -1,7 +1,15 @@
 // File Path: frontend/src/components/dashboard/DriverPanels.jsx
 
 import React, { useState } from "react";
-import { Car, LoaderCircle, Hand, Save, LocateFixed,  } from "lucide-react";
+import {
+  Car,
+  LoaderCircle,
+  Hand,
+  Save,
+  LocateFixed,
+  CheckCircle,
+  Search,
+} from "lucide-react";
 
 export const DriverDashboardPanel = React.memo(
   ({ pendingRides, isDriverDataLoading, handleAcceptRide }) => (
@@ -178,31 +186,37 @@ export const DriverOnboardingPanel = React.memo(({ api, setDriverProfile }) => {
 });
 
 export const DriverActiveRidePanel = React.memo(({ activeRide }) => {
-    const userName = activeRide.userId?.name || "Passenger";
+  const userName = activeRide.userId?.name || "Passenger";
 
-    return (
-        <div className="bg-gray-800/50 backdrop-blur-sm p-8 rounded-2xl shadow-xl h-full flex flex-col border border-gray-700">
-            <h2 className="text-3xl font-bold mb-2 text-white tracking-tight">On a Trip</h2>
-            <p className="text-gray-400 mb-6">Pickup for {userName}.</p>
-            <div className="bg-green-900/50 p-6 rounded-xl space-y-5 flex-grow text-center flex flex-col justify-center">
-                <CheckCircle size={48} className="text-green-400 mx-auto mb-4" />
-                <p className="text-lg font-semibold">Ride Accepted!</p>
-                <p className="text-gray-300">Proceed to the pickup location.</p>
-            </div>
-        </div>
-    );
+  return (
+    <div className="bg-gray-800/50 backdrop-blur-sm p-8 rounded-2xl shadow-xl h-full flex flex-col border border-gray-700">
+      <h2 className="text-3xl font-bold mb-2 text-white tracking-tight">
+        On a Trip
+      </h2>
+      <p className="text-gray-400 mb-6">Pickup for {userName}.</p>
+      <div className="bg-green-900/50 p-6 rounded-xl space-y-5 flex-grow text-center flex flex-col justify-center">
+        <CheckCircle size={48} className="text-green-400 mx-auto mb-4" />
+        <p className="text-lg font-semibold">Ride Accepted!</p>
+        <p className="text-gray-300">Proceed to the pickup location.</p>
+      </div>
+    </div>
+  );
 });
 
 export const DriverRideCancelledPanel = React.memo(({ onFindRides }) => (
-    <div className="bg-gray-800/50 backdrop-blur-sm p-8 rounded-2xl shadow-xl h-full flex flex-col justify-center items-center text-center border border-gray-700">
-        <h2 className="text-3xl font-bold mb-2 text-white tracking-tight">Ride Cancelled</h2>
-        <p className="text-gray-400 mb-6 max-w-xs">The user has cancelled the ride. You are now available for new requests.</p>
-        <button 
-            onClick={onFindRides}
-            className="w-full h-16 mt-4 flex justify-center items-center bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-xl py-2 px-4 rounded-lg transition-all duration-300 shadow-lg hover:shadow-indigo-500/50"
-        >
-            <Search size={24} className="mr-2" />
-            Find More Rides
-        </button>
-    </div>
+  <div className="bg-gray-800/50 backdrop-blur-sm p-8 rounded-2xl shadow-xl h-full flex flex-col justify-center items-center text-center border border-gray-700">
+    <h2 className="text-3xl font-bold mb-2 text-white tracking-tight">
+      Ride Cancelled
+    </h2>
+    <p className="text-gray-400 mb-6 max-w-xs">
+      The user has cancelled the ride. You are now available for new requests.
+    </p>
+    <button
+      onClick={onFindRides}
+      className="w-full h-16 mt-4 flex justify-center items-center bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-xl py-2 px-4 rounded-lg transition-all duration-300 shadow-lg hover:shadow-indigo-500/50"
+    >
+      <Search size={24} className="mr-2" />
+      Find More Rides
+    </button>
+  </div>
 ));
