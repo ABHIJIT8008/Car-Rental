@@ -1,7 +1,7 @@
 // File: src/pages/DashboardPage.jsx
 import { useState, useEffect, useCallback, useRef } from "react";
 import { Outlet, useNavigate } from "react-router-dom";
-import { Car } from "lucide-react";
+import { Car, Menu, X } from "lucide-react";
 import useDebounce from "../hooks/useDebounce";
 
 const DashboardPage = ({ user, handleLogout, api }) => {
@@ -18,6 +18,7 @@ const DashboardPage = ({ user, handleLogout, api }) => {
   const [driverProfile, setDriverProfile] = useState(null);
   const [isProfileLoading, setIsProfileLoading] = useState(true);
   const [activeDriverRide, setActiveDriverRide] = useState(null);
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   // booking inputs
   const [pickupLocation, setPickupLocation] = useState("Vijay Nagar, Indore");
@@ -25,13 +26,18 @@ const DashboardPage = ({ user, handleLogout, api }) => {
     type: "Point",
     coordinates: [75.8937, 22.7533],
   });
-  const [dropoffLocation, setDropoffLocation] = useState("Rajwada Palace, Indore");
+  const [dropoffLocation, setDropoffLocation] = useState(
+    "Rajwada Palace, Indore"
+  );
   const [dropoffCoords, setDropoffCoords] = useState({
     type: "Point",
     coordinates: [75.8577, 22.7177],
   });
 
-  const [isGeocoding, setIsGeocoding] = useState({ pickup: false, dropoff: false });
+  const [isGeocoding, setIsGeocoding] = useState({
+    pickup: false,
+    dropoff: false,
+  });
   const [suggestions, setSuggestions] = useState([]);
   const [activeInput, setActiveInput] = useState(null);
   const suggestionsRef = useRef(null);
@@ -48,7 +54,9 @@ const DashboardPage = ({ user, handleLogout, api }) => {
     setIsGeocoding((prev) => ({ ...prev, [type]: true }));
     try {
       const res = await fetch(
-        `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(query)}&limit=5`
+        `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(
+          query
+        )}&limit=5`
       );
       const data = await res.json();
       setSuggestions(data);
@@ -103,7 +111,10 @@ const DashboardPage = ({ user, handleLogout, api }) => {
   }, [rideStatus, currentRideId, api]);
 
   const handleSuggestionClick = (s) => {
-    const coords = { type: "Point", coordinates: [parseFloat(s.lon), parseFloat(s.lat)] };
+    const coords = {
+      type: "Point",
+      coordinates: [parseFloat(s.lon), parseFloat(s.lat)],
+    };
     if (activeInput === "pickup") {
       setPickupLocation(s.display_name);
       setPickupCoords(coords);
@@ -126,7 +137,10 @@ const DashboardPage = ({ user, handleLogout, api }) => {
         setPickupCoords({ type: "Point", coordinates: [longitude, latitude] });
         setRideError("");
       },
-      () => setRideError("Could not get your location. Please enable location services.")
+      () =>
+        setRideError(
+          "Could not get your location. Please enable location services."
+        )
     );
   };
 
@@ -139,7 +153,10 @@ const DashboardPage = ({ user, handleLogout, api }) => {
       const dropoffData = { address: dropoffLocation, ...dropoffCoords };
       const data = await api("/rides/request", {
         method: "POST",
-        body: JSON.stringify({ pickupLocation: pickupData, dropoffLocation: dropoffData }),
+        body: JSON.stringify({
+          pickupLocation: pickupData,
+          dropoffLocation: dropoffData,
+        }),
       });
       if (data.success) {
         setCurrentRideId(data.ride._id);
@@ -250,7 +267,14 @@ const DashboardPage = ({ user, handleLogout, api }) => {
     }
 
     return () => clearInterval(intervalId);
-  }, [user.role, rideStatus, api, pickupCoords, fetchPendingRides, activeDriverRide]);
+  }, [
+    user.role,
+    rideStatus,
+    api,
+    pickupCoords,
+    fetchPendingRides,
+    activeDriverRide,
+  ]);
 
   const handleAcceptRide = async (rideId) => {
     try {
@@ -266,9 +290,13 @@ const DashboardPage = ({ user, handleLogout, api }) => {
 
   // map coords chosen by priority
   const mapPickup =
-    activeDriverRide?.pickupLocation ?? confirmedRide?.pickupLocation ?? pickupCoords;
+    activeDriverRide?.pickupLocation ??
+    confirmedRide?.pickupLocation ??
+    pickupCoords;
   const mapDropoff =
-    activeDriverRide?.dropoffLocation ?? confirmedRide?.dropoffLocation ?? dropoffCoords;
+    activeDriverRide?.dropoffLocation ??
+    confirmedRide?.dropoffLocation ??
+    dropoffCoords;
 
   // expose state + helpers to nested routes via Outlet context
   const outletContext = {
@@ -325,22 +353,72 @@ const DashboardPage = ({ user, handleLogout, api }) => {
   const navigate = useNavigate();
 
   return (
-    <div className="min-h-screen bg-gray-900 text-white">
+    <div className="min-h-screen bg-gray-900 text-white flex flex-col">
       <header className="p-6 border-b border-gray-800 flex justify-between items-center bg-gray-800/50 backdrop-blur-sm">
-        <div className="flex items-center">
-          <Car size={28} />
-          <h1 className="ml-3 text-2xl font-bold tracking-tight">RideLink</h1>
-        </div>
-        <div className="flex items-center gap-4">
-          <button onClick={() => navigate('/dashboard/panel')} className="px-3 py-1 rounded hover:bg-gray-800">Panel</button>
-          <button onClick={() => navigate('/dashboard/map')} className="px-3 py-1 rounded hover:bg-gray-800">Map</button>
-          <span className="text-gray-300 capitalize">Welcome, {user.name}! ({user.role})</span>
-          <button onClick={handleLogout} className="bg-red-600 hover:bg-red-500 px-4 py-2 rounded-lg font-semibold transition">Logout</button>
-        </div>
-      </header>
+  <div className="flex items-center">
+    <Car size={28} />
+    <h1 className="ml-3 text-2xl font-bold tracking-tight">RideLink</h1>
+  </div>
+
+  {/* Desktop Navigation */}
+  <div className="hidden md:flex items-center gap-4">
+    <button onClick={() => navigate('/dashboard/panel')} className="px-3 py-1 rounded hover:bg-gray-800">Panel</button>
+    <button onClick={() => navigate('/dashboard/map')} className="px-3 py-1 rounded hover:bg-gray-800">Map</button>
+    <span className="text-gray-300 capitalize">Welcome, {user.name}! ({user.role})</span>
+    <button onClick={handleLogout} className="bg-red-600 hover:bg-red-500 px-4 py-2 rounded-lg font-semibold transition">Logout</button>
+  </div>
+
+  {/* Mobile Burger Button */}
+  <button
+    className="md:hidden p-2 rounded hover:bg-gray-800"
+    onClick={() => setIsMenuOpen(prev => !prev)}
+    aria-label="Toggle menu"
+  >
+    {isMenuOpen ? <X size={24} /> : <Menu size={24} />}
+  </button>
+</header>
+
+      {/* Mobile Menu */}
+{isMenuOpen && (
+  <div className="md:hidden bg-gray-800 border-b border-gray-700 p-4 space-y-3">
+    <button
+      onClick={() => {
+        navigate("/dashboard/panel");
+        setIsMenuOpen(false);
+      }}
+      className="block w-full text-left px-3 py-2 rounded hover:bg-gray-700"
+    >
+      Panel
+    </button>
+
+    <button
+      onClick={() => {
+        navigate("/dashboard/map");
+        setIsMenuOpen(false);
+      }}
+      className="block w-full text-left px-3 py-2 rounded hover:bg-gray-700"
+    >
+      Map
+    </button>
+
+    <span className="block px-3 py-2 text-gray-300 capitalize">
+      Welcome, {user.name}! ({user.role})
+    </span>
+
+    <button
+      onClick={() => {
+        handleLogout();
+        setIsMenuOpen(false);
+      }}
+      className="w-full bg-red-600 hover:bg-red-500 px-4 py-2 rounded-lg font-semibold transition"
+    >
+      Logout
+    </button>
+  </div>
+)}
 
       {/* Outlet receives the full application state via context */}
-      <main className="p-8" style={{ height: 'calc(100vh - 88px)' }}>
+      <main className="flex-1 p-4 md:p-8 bg-gray-900 overflow-y-auto">
         <Outlet context={outletContext} />
       </main>
     </div>
